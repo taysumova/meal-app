@@ -24,13 +24,21 @@
         @click="drawer = !drawer"
       ></v-toolbar-side-icon>
       <v-spacer class="hidden-md-and-up"></v-spacer>
-      <v-toolbar-title>{{ appTitle }}</v-toolbar-title>
-      <v-btn flat class="hidden-sm-and-down">Меню</v-btn>
+      <router-link to="/">
+        <v-toolbar-title to="/">{{ appTitle }}</v-toolbar-title>
+      </router-link>
+      <v-btn flat class="hidden-sm-and-down" to="/menu">Меню</v-btn>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <v-btn flat class="hidden-sm-and-down">Войти</v-btn>
-      <v-btn color="brown lighten-3" class="hidden-sm-and-down">
-        Присоединиться
-      </v-btn>
+      <div v-if="!isAuthenticated" class="hidden-sm-and-down">
+        <v-btn flat to="/sign-in">Войти</v-btn>
+        <v-btn color="brown lighten-3" to="/join">
+          Присоединиться
+        </v-btn>
+      </div>
+      <div v-else>
+        <v-btn flat to="/about">PROFILE</v-btn>
+        <v-btn outline color="white" @click="logout">Выйти</v-btn>
+      </div>
     </v-toolbar>
   </span>
 </template>
@@ -48,8 +56,23 @@ export default {
         { title: 'Присоединиться' }
       ]
     };
+  },
+  computed: {
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated;
+    }
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('userSignOut');
+    }
   }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+a {
+  color: white;
+  text-decoration: none;
+}
+</style>
